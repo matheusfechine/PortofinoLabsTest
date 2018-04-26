@@ -1,4 +1,4 @@
-package com.portofinolabs.PortofinoLabs;
+package com.portofinolabs;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
