@@ -6,6 +6,7 @@ import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
 @ComponentScan("com.portofinolabs.model.parser")
+@ComponentScan("com.portofinolabs.model.converter")
 @ComponentScan(basePackageClasses = HelloWorldController.class)
 public class PortofinoLabsApplication {
 

@@ -8,9 +8,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import com.portofinolabs.model.LogDetail;
+import com.portofinolabs.model.LogSet;
 import com.portofinolabs.model.Message;
 import com.portofinolabs.model.parser.EntityParser;
-import com.portofinolabs.service.LogDetailService;
+import com.portofinolabs.service.EndpointLogService;
 
 @Controller
 @RequestMapping("/v1")
@@ -20,7 +22,13 @@ public class HelloWorldController {
 	private EntityParser<Message> messageParser;
 	
 	@Autowired
-	private LogDetailService service;
+	private EntityParser<LogDetail> logParser;
+	
+	@Autowired
+	private EntityParser<LogSet> logSetParser;
+	
+	@Autowired
+	private EndpointLogService endpointLogService;
 	
 	@RequestMapping(value = "/helloworld", method = RequestMethod.GET)
 	@ResponseBody
@@ -34,8 +42,22 @@ public class HelloWorldController {
 		
 		Message message = new Message();
 		message.setMessage("Hello World!");
-		service.save(remoteAddress);
+		endpointLogService.save(remoteAddress);
 		return messageParser.parse(message);
+	}
+	
+	@RequestMapping(value = "/logs", method = RequestMethod.GET)
+	@ResponseBody
+	public String listAllLogs(){
+		LogDetail all = endpointLogService.findAll();
+		return logParser.parse(all);
+	}
+	
+	@RequestMapping(value = "/hello-world/logs", method = RequestMethod.GET)
+	@ResponseBody
+	public String listHelloWorldLogs(){
+		LogSet allLogSets = endpointLogService.findAllLogSets();
+		return logSetParser.parse(allLogSets);
 	}
 	
 }

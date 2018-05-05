@@ -3,11 +3,9 @@ package com.portofinolabs.redis.repository;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-import com.portofinolabs.model.LogDetail;
+import com.portofinolabs.model.EndpointLog;
 
 @Repository
-public interface LogDetailRepository extends CrudRepository<LogDetail, String>{
+public interface EndpointLogRepository extends CrudRepository<EndpointLog, String>{
 
-	
-	
 }
