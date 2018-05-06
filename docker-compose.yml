@@ -1,0 +1,28 @@
+version: '2'
+services:
+  nginx:
+   container_name: some-nginx
+   image: nginx:1.13
+   restart: always
+   ports:
+   - 80:80
+   - 443:443
+   volumes:
+   - ./nginx/conf.d:/etc/nginx/conf.d
+  redis:
+   image: redis:3.2.11-alpine
+   ports:
+   - "6379:6379"
+  app:
+    restart: always
+    build: ./apps
+    working_dir: /apps
+    volumes:
+      - ./apps:/apps
+    expose:
+      - "8080"
+    command: mvn clean spring-boot:run
+    links:
+      - redis:redis
+    depends_on:
+      - nginx
