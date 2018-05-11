@@ -1,5 +1,8 @@
 package com.portofinolabs;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,19 +33,18 @@ public class HelloWorldController {
 	@Autowired
 	private EndpointLogService endpointLogService;
 	
+	
 	@RequestMapping(value = "/helloworld", method = RequestMethod.GET)
 	@ResponseBody
 	public String hello(){
 		
-		String remoteAddress = 
-				((ServletRequestAttributes)RequestContextHolder
-						.currentRequestAttributes())
-			       .getRequest()
-			       .getRemoteAddr();
-		
 		Message message = new Message();
 		message.setMessage("Hello World!");
-		endpointLogService.save(remoteAddress);
+		try {
+			endpointLogService.save(InetAddress.getLocalHost().getHostAddress());
+		} catch (UnknownHostException e) {
+			return "An error occured"+ e.getMessage();
+		}
 		return messageParser.parse(message);
 	}
 	

@@ -15,6 +15,7 @@ public class RedisConfig {
 	@Bean
 	JedisConnectionFactory jedisConnectionFactory() {
 		JedisConnectionFactory jedisConnectionFactory = new JedisConnectionFactory();
+		jedisConnectionFactory.setHostName("172.18.0.2");
 		return jedisConnectionFactory;
 	}
 	
