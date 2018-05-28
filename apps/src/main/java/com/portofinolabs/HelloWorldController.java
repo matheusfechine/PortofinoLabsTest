@@ -4,16 +4,18 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
+import com.portofinolabs.model.EndpointLog;
 import com.portofinolabs.model.LogDetail;
 import com.portofinolabs.model.LogSet;
 import com.portofinolabs.model.Message;
+import com.portofinolabs.model.converter.LogDetailConverter;
 import com.portofinolabs.model.parser.EntityParser;
 import com.portofinolabs.service.EndpointLogService;
 
@@ -33,33 +35,38 @@ public class HelloWorldController {
 	@Autowired
 	private EndpointLogService endpointLogService;
 	
+	@Autowired
+	private LogDetailConverter converter;
+	
 	
 	@RequestMapping(value = "/helloworld", method = RequestMethod.GET)
 	@ResponseBody
-	public String hello(){
+	public ResponseEntity<?> hello(){
 		
 		Message message = new Message();
 		message.setMessage("Hello World!");
 		try {
 			endpointLogService.save(InetAddress.getLocalHost().getHostAddress());
 		} catch (UnknownHostException e) {
-			return "An error occured"+ e.getMessage();
+			return new ResponseEntity<>("An error occured "+ e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
-		return messageParser.parse(message);
+		return new ResponseEntity<>(messageParser.parse(message), HttpStatus.OK);
 	}
 	
 	@RequestMapping(value = "/logs", method = RequestMethod.GET)
 	@ResponseBody
 	public String listAllLogs(){
-		LogDetail all = endpointLogService.findAll();
-		return logParser.parse(all);
+		Iterable<EndpointLog> allEndpoints = endpointLogService.findAll();
+		LogDetail logSet = converter.create(allEndpoints);
+		return logParser.parse(logSet);
 	}
 	
 	@RequestMapping(value = "/hello-world/logs", method = RequestMethod.GET)
 	@ResponseBody
 	public String listHelloWorldLogs(){
-		LogSet allLogSets = endpointLogService.findAllLogSets();
-		return logSetParser.parse(allLogSets);
+		Iterable<EndpointLog> allEndpoints = endpointLogService.findAll();
+		LogSet logSet = converter.createLogSet(allEndpoints);
+		return logSetParser.parse(logSet);
 	}
 	
 }

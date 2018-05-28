@@ -1,7 +1,6 @@
 package com.portofinolabs.model.converter;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
@@ -11,6 +10,13 @@ import com.portofinolabs.model.LogDetail;
 import com.portofinolabs.model.LogSet;
 import com.portofinolabs.model.Logs;
 
+/**
+ * This class was created to Convert {@link EndpointLog}
+ * to custom objects.
+ * 
+ * @author matheus
+ *
+ */
 @Component
 public class LogDetailConverter {
 
